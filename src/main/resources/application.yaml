@@ -1,0 +1,19 @@
+server:
+  port: ${SERVER_PORT:8082}
+
+spring:
+  application:
+    name: task-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/taskflow_tasks}
+    username: ${DB_USERNAME:taskflow}
+    password: ${DB_PASSWORD:secret}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  flyway:
+    enabled: true
+
+jwt:
+  secret: ${JWT_SECRET:0OL3hz0pZb6pqe6yKvcHFwCqKwIaQZmT9RlSMfgcmRx}
