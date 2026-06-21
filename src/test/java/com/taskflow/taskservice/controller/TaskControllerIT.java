@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-class TaskControllerTest {
+class TaskControllerIT {
 
     @Container
     static PostgreSQLContainer<?> postgres =
