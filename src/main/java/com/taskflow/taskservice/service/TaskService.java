@@ -4,6 +4,8 @@ import com.taskflow.taskservice.domain.Task;
 import com.taskflow.taskservice.dto.CreateTaskRequest;
 import com.taskflow.taskservice.dto.TaskResponse;
 import com.taskflow.taskservice.dto.UpdateTaskRequest;
+import com.taskflow.taskservice.event.TaskCreatedEvent;
+import com.taskflow.taskservice.event.TaskEventPublisher;
 import com.taskflow.taskservice.exception.TaskNotFoundException;
 import com.taskflow.taskservice.repository.TaskRepository;
 import org.springframework.data.domain.Page;
@@ -14,14 +16,20 @@ import org.springframework.stereotype.Service;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final TaskEventPublisher eventPublisher;
 
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, TaskEventPublisher eventPublisher) {
         this.taskRepository = taskRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public TaskResponse create(CreateTaskRequest request, Long ownerId) {
         Task task = new Task(request.title(), request.description(), ownerId);
         Task savedTask = taskRepository.save(task);
+
+        eventPublisher.publishTaskCreated(
+                new TaskCreatedEvent(savedTask.getId(), savedTask.getTitle(), savedTask.getOwnerId())
+        );
 
         return TaskResponse.from(savedTask);
     }
